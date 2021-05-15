@@ -35,9 +35,9 @@ window = display.set_mode((win_windth, win_height))
 display.set_caption('Ping-Pong')
 window.fill(background)
 
-racket1 = Control('racket.jpg', 30, 200, 4, 50, 150)
-racket2 = Control('racket.jpg', 520, 200, 4, 50, 150)
-ball = GameSprite('ball.png', 200, 200, 4, 50, 50)
+racket1 = Control('racket.jpg', 30, 200, 15, 100, 150)
+racket2 = Control('racket.jpg', 550, 200, 15, 100, 150)
+ball = GameSprite('ball.png', 200, 200, 100, 50, 50)
 
 clock = time.Clock()
 FPS = 120
