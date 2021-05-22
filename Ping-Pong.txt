@@ -2,6 +2,9 @@ from pygame import *
 from random import *
 from time import time as timer
 
+speed_x = 2
+speed_y = 2
+
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
         super().__init__()
@@ -15,28 +18,33 @@ class GameSprite(sprite.Sprite):
 
 class Control(GameSprite):
     def update_l(self):
-        keys = key.get.pressed()
-        if keys[k_DOWN] and self.rect.y > 80:
-            self.rect.y -= self.speed
-        if keys[k_UP] and self.rect.y < 80:
+        keys = key.get_pressed()
+        if keys[K_s] and self.rect.y < 450:
             self.rect.y += self.speed
+        if keys[K_w] and self.rect.y > 0:
+            self.rect.y -= self.speed
     def update_r(self):
-        keys = key.get.pressed()
-        if keys[k_s] and self.rect.y > 80:
-            self.rect.y -= self.speed
-        if keys[k_w] and self.rect.y < 80:
+        keys = key.get_pressed()
+        if keys[K_DOWN] and self.rect.y < 450:
             self.rect.y += self.speed
+        if keys[K_UP] and self.rect.y > 0:
+            self.rect.y -= self.speed
 
 win_windth = 600
 win_height = 500
+
+font.init()
+font = font.SysFont('Showcard Gothic', 55)
+win1 = font.render('Левый чел выиграл!', True, (255, 5, 0))
+win2 = font.render('Правый чел выиграл!', True, (255, 5, 0))
 
 background = (200, 255, 255)
 window = display.set_mode((win_windth, win_height))
 display.set_caption('Ping-Pong')
 window.fill(background)
 
-racket1 = Control('racket.jpg', 30, 200, 15, 100, 150)
-racket2 = Control('racket.jpg', 550, 200, 15, 100, 150)
+racket1 = Control('racket.jpg', 30, 200, 15, 100, 5)
+racket2 = Control('racket.jpg', 550, 200, 15, 100, 5)
 ball = GameSprite('ball.png', 200, 200, 100, 50, 50)
 
 clock = time.Clock()
@@ -50,10 +58,22 @@ while game:
                 game = False
     if finish != True:
         window.fill(background)
-        racket1.update()
-        racket2.update()        
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+        racket1.update_l()
+        racket2.update_r()        
         racket1.reset()
         racket2.reset()
         ball.reset()
+    if ball.rect.y > win_height-50 or ball.rect.y < 0:
+            speed_y *= -1
+    if sprite.collide_rect(racket1, ball) or sprite.collide_rect(racket2, ball):
+        speed_x *= -1
+    if ball.rect.x == 600:
+        finish = True
+        window.blit(win1, (115, 220))
+    if ball.rect.x == -150:
+        finish = True
+        window.blit(win2, (115, 220))
     display.update()
     clock.tick(FPS)
